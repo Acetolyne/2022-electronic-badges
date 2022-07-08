@@ -32,10 +32,10 @@ Adafruit_NeoPixel RGB_LEDs(LED_count, LED_pin, NEO_GRB + NEO_KHZ800);
 
 //MPU-6050 (GY-25 module) 3-axis MEMS gyro + 3-axis MEMS accelerometer
 const int MPUadr=0x68; 
-int16_t AcX,AcY,AcZ,Tmp,GyX,GyY,GyZ;  //MPU Values
+int16_t AcX,AcY,AcZ,Tmp,GyX,GyY,GyZ,CUR_color; //MPU Values
 
 int B1_val, B2_val, B3_val, B4_val;
-int LDR_val, TMP_val;
+int LDR_val, TMP_val, CUR_input; 
 
 int Shot_val; // Shot Noise from simple Random Noise Generator (RNG) circuit
 
@@ -66,6 +66,7 @@ void setup(void)
 
   gfx->fillScreen(BLACK);
   gfx->drawCircle(120, 120, 110, RED);
+  CUR_input = 0;
 }
 
 void loop()
@@ -74,35 +75,41 @@ void loop()
 
   ReadButtons();  
 
+  CUR_color = RGB_LEDs.Color(random(255),random(255),random(255));
+
   if(B1_val){
     //color LED 7
     RGB_LEDs.setPixelColor(7, RGB_LEDs.Color(40, 0, 40));  //purple
   } else {
-    RGB_LEDs.setPixelColor(7, RGB_LEDs.Color(0,10,0));     //green
+    RGB_LEDs.setPixelColor(7, CUR_color);     //green
   }
   if(B2_val){
     RGB_LEDs.setPixelColor(6, RGB_LEDs.Color(40, 0, 40));  //purple
   } else {
-    RGB_LEDs.setPixelColor(6, RGB_LEDs.Color(0,10,0));     //green
+    RGB_LEDs.setPixelColor(6, CUR_color);     //green
   }
   if(B3_val){
     //color LED 4
     RGB_LEDs.setPixelColor(4, RGB_LEDs.Color(40, 0, 40));  //purple
   } else {
-    RGB_LEDs.setPixelColor(4, RGB_LEDs.Color(0,10,0));     //green
+    RGB_LEDs.setPixelColor(4, CUR_color);     //green
   }
   if(B4_val){
     //color LED 3
     RGB_LEDs.setPixelColor(3, RGB_LEDs.Color(40, 0, 40));  //purple
   } else {
-    RGB_LEDs.setPixelColor(3, RGB_LEDs.Color(0,10,0));     //green
+    RGB_LEDs.setPixelColor(3, CUR_color);     //green
   }
+  RGB_LEDs.setPixelColor(1, CUR_color);
+  RGB_LEDs.setPixelColor(2, CUR_color);
+  RGB_LEDs.setPixelColor(5, CUR_color);
+  RGB_LEDs.setPixelColor(0, CUR_color);
   RGB_LEDs.show();
 
   ReadNoise();
 
   gfx->setTextSize(4);
-  gfx->setTextColor(YELLOW, BLACK);
+  gfx->setTextColor(CUR_color, BLACK);
 
   gfx->setCursor(60, 100);
   sprintf(strBuf, "Defcon");
@@ -128,7 +135,7 @@ void loop()
 //  sprintf(strBuf, "GyrZ: %04d", (GyZ&0x0FFF));  //lowest 12 bits
 //  gfx->println(strBuf);
   
-  //delay(300);
+  delay(3000);
 }
 
 void ReadButtons(void){
@@ -153,10 +160,10 @@ void cycleLEDs() {
     RGB_LEDs.show();
     delay(300);
   }
-  for (i=0; i<8; i++){
-    RGB_LEDs.setPixelColor(i, RGB_LEDs.Color(0,10,0));  //light green
-    RGB_LEDs.show();
-  }
+//  for (i=0; i<8; i++){
+//    RGB_LEDs.setPixelColor(i, RGB_LEDs.Color(0,10,0));  //light green
+//    RGB_LEDs.show();
+//  }
 }
 
 void StartMPU(){
