@@ -43,7 +43,6 @@ void setup(void)
 {
   analogReadResolution(12);  //increase analog input resolution to 12 bits  [0..4095]
   RGB_LEDs.begin();
-  cycleLEDs();
   StartMPU();
 
   //button pins needs pullups since they close directly to ground (active low)
@@ -73,37 +72,44 @@ void loop()
 {
   char strBuf[20];
 
-  ReadButtons();  
+  // ReadButtons();  
+
+  //CUR_color = RGB_LEDs.Color(random(255),random(255),random(255));
+
+//  if(B1_val){
+//    //color LED 7
+//    RGB_LEDs.setPixelColor(7, RGB_LEDs.Color(40, 0, 40));  //purple
+//  } else {
+//    RGB_LEDs.setPixelColor(7, CUR_color);     //green
+//  }
+//  if(B2_val){
+//    RGB_LEDs.setPixelColor(6, RGB_LEDs.Color(40, 0, 40));  //purple
+//  } else {
+//    RGB_LEDs.setPixelColor(6, CUR_color);     //green
+//  }
+//  if(B3_val){
+//    //color LED 4
+//    RGB_LEDs.setPixelColor(4, RGB_LEDs.Color(40, 0, 40));  //purple
+//  } else {
+//    RGB_LEDs.setPixelColor(4, CUR_color);     //green
+//  }
+//  if(B4_val){
+//    //color LED 3
+//    RGB_LEDs.setPixelColor(3, RGB_LEDs.Color(40, 0, 40));  //purple
+//  } else {
+//    RGB_LEDs.setPixelColor(3, CUR_color);     //green
+//  }
+  cycleLEDs(2);
 
   CUR_color = RGB_LEDs.Color(random(255),random(255),random(255));
-
-  if(B1_val){
-    //color LED 7
-    RGB_LEDs.setPixelColor(7, RGB_LEDs.Color(40, 0, 40));  //purple
-  } else {
-    RGB_LEDs.setPixelColor(7, CUR_color);     //green
-  }
-  if(B2_val){
-    RGB_LEDs.setPixelColor(6, RGB_LEDs.Color(40, 0, 40));  //purple
-  } else {
-    RGB_LEDs.setPixelColor(6, CUR_color);     //green
-  }
-  if(B3_val){
-    //color LED 4
-    RGB_LEDs.setPixelColor(4, RGB_LEDs.Color(40, 0, 40));  //purple
-  } else {
-    RGB_LEDs.setPixelColor(4, CUR_color);     //green
-  }
-  if(B4_val){
-    //color LED 3
-    RGB_LEDs.setPixelColor(3, RGB_LEDs.Color(40, 0, 40));  //purple
-  } else {
-    RGB_LEDs.setPixelColor(3, CUR_color);     //green
-  }
+  RGB_LEDs.setPixelColor(0, CUR_color);
   RGB_LEDs.setPixelColor(1, CUR_color);
   RGB_LEDs.setPixelColor(2, CUR_color);
+  RGB_LEDs.setPixelColor(3, CUR_color);
+  RGB_LEDs.setPixelColor(4, CUR_color);
   RGB_LEDs.setPixelColor(5, CUR_color);
-  RGB_LEDs.setPixelColor(0, CUR_color);
+  RGB_LEDs.setPixelColor(6, CUR_color);
+  RGB_LEDs.setPixelColor(7, CUR_color);
   RGB_LEDs.show();
 
   ReadNoise();
@@ -153,17 +159,16 @@ void ReadNoise(void)
   TMP_val = ReadTemp();
 }
 
-void cycleLEDs() {
-  int i;
-  for (i=0; i<8; i++){
-    RGB_LEDs.setPixelColor(i, RGB_LEDs.Color(40, 0, 0));  //light red
-    RGB_LEDs.show();
-    delay(300);
+void cycleLEDs(int count) {
+  int c, i;
+  for (c=0; c<count; c++){
+    for (i=0; i<8; i++){
+      CUR_color = RGB_LEDs.Color(random(255),random(255),random(255));
+      RGB_LEDs.setPixelColor(i, CUR_color);
+      RGB_LEDs.show();
+      delay(1000);
+    }
   }
-//  for (i=0; i<8; i++){
-//    RGB_LEDs.setPixelColor(i, RGB_LEDs.Color(0,10,0));  //light green
-//    RGB_LEDs.show();
-//  }
 }
 
 void StartMPU(){
